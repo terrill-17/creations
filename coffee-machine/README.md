@@ -47,6 +47,53 @@ The kettle and the 24 V supply are the only mains-powered parts, and both are bo
 | Hot lines | Routed inside the body in insulated sleeve | n/a |
 | Kettle heat and steam in a closed bay | Intake slots in the base overhang, exhaust slots high in the left side | Door switch: remote and timed starts need the kettle door closed |
 
+## Electronics and wiring (draft)
+
+All control electronics sit on the PETG tray at the top of the rear tech strip, behind the rear divider and above any water. Cables reach the front through 20 mm grommet holes in the divider. The model shows each run, colored by circuit (see the `assembly_wiring` render and the viewer's layer toggles).
+
+![Wiring](images/assembly_wiring.png)
+
+**Power path:** 24 V brick → panel DC jack (back) → 10 A blade fuse → main relay (coil switched by the latching brass **Power** button) → 24 V bus to the heater MOSFET, 3× TMC2209, LED strip, button rings and the 24→5 V buck that feeds the ESP32 and sensor boards. The kettle's mains path never enters our wiring. The kettle base plugs into the listed relay outlet, which plugs into the wall, and the ESP32 drives only that outlet's low-voltage control input.
+
+| Circuit | From (tray) | To | Cable | Notes |
+|---|---|---|---|---|
+| 24 V in | DC jack | fuse → relay → tray bus | 16 AWG pair | Only the relay coil runs through the brass Power button |
+| Heater | MOSFET module | 24 V cartridge via 2× 120 °C cutouts in series | 16 AWG silicone | Cutouts break heater power without the controller |
+| Heater NTC | ESP32 ADC | NTC in heater block | 22 AWG pair, fibreglass sleeve | |
+| Kettle temp | MAX31865 #1 | PT1000 on the dip wand | 3-wire shielded | |
+| Brew temp | MAX31865 #2 | PT1000 in the 316 tee before the nozzle | 3-wire shielded | |
+| Flow | ESP32 interrupt pin | Digmesa Nano Inox | 3-core (V+, GND, pulse) | Pulse is open collector: 10 k pull-up to 3.3 V |
+| Carafe weight | HX711 #1 | 5 kg load cell under the drip tray | 4-core | |
+| Kettle weight | HX711 #2 | 5 kg load cell under the kettle platform | 4-core | Water remaining, for the start interlocks |
+| Cone check and bed height | ESP32 I2C | VL53L1X in the nozzle shroud | 4-core | |
+| Door closed | ESP32 input | Reed switch on the bay divider front | 2-core | Magnet in the kettle door |
+| Drawer closed | ESP32 input | Reed switch at the rear of the drawer bay | 2-core | Magnet in the drawer tray |
+| Pump | TMC2209 #1 | Peristaltic pump stepper | 4-core stepper | |
+| Nozzle rotate, radial | TMC2209 #2, #3 | Two NEMA 17 pancake steppers | 4-core stepper | Concept until the mechanism is designed |
+| Base glow | Level shifter | 24 V addressable strip under the base | 3-core (24 V, GND, data) | Through a hole in the base inside the plinth |
+| Buttons | ESP32 input + 24 V | Brass Power and Brew on the back | 4-core each | Brew's LED ring is driven through a small transistor |
+| Kettle | ESP32 output | Relay outlet control input (3–48 V DC) | 2-core | Outlet is off whenever the controller is off |
+
+**ESP32-S3 pin plan** (DevKitC-1-N8 without octal PSRAM, so GPIO35–37 are free; VERIFY against the board you buy):
+
+| Function | GPIO |
+|---|---|
+| SPI SCK, MOSI, MISO (MAX31865 ×2) | 12, 11, 13 |
+| MAX31865 chip selects | 10, 9 |
+| I2C SDA, SCL (VL53L1X) | 8, 18 |
+| HX711 carafe DT, SCK | 4, 5 |
+| HX711 kettle DT, SCK | 6, 7 |
+| Heater NTC (ADC1) | 1 |
+| Flow meter pulse | 2 |
+| Heater PWM | 14 |
+| Pump STEP, DIR | 15, 16 |
+| Nozzle rotate STEP, DIR | 17, 21 |
+| Nozzle radial STEP, DIR | 42, 41 |
+| Stepper enable (shared), TMC UART | 40, 39 |
+| LED strip data (via 74AHCT125) | 38 |
+| Door reed, drawer reed, Brew button | 35, 36, 37 |
+| Brew LED ring, kettle relay outlet | 48, 47 |
+
 ## Key dimensions (draft 2)
 
 All values live in `src/params.scad`.
@@ -136,7 +183,7 @@ Vent slots: 8 mm wide in the base overhang under the kettle bay (outside the pli
 - Check the 4 mm gap between the carafe top and the drawer front against your real carafe (handle and lid).
 - Write the firmware: ESP32 web app, recipes, PID loops and interlocks.
 - Confirm the Brew-button default recipe (assumed 15 g to 250 g at 93 °C).
-- The BOM's estimated total is about $1,059. The biggest costs are the CNC heater block, pump, PA12 prints and plywood.
+- The BOM's estimated total is about $1,107. The biggest costs are the CNC heater block, pump, PA12 prints and plywood.
 
 ## Rebuilding exports
 
@@ -148,3 +195,4 @@ Vent slots: 8 mm wide in the base overhang under the kettle bay (outside the pli
 
 - 2026-11-07: started. Settled on an automatic pour-over brewer with a V60-02 insert, a plain kettle in a side bay switched by a relay outlet, a 24 V trim heater, PT1000 sensors, a Digmesa flow meter, three load cells, and phone plus button control. Draft 1 of the CAD and BOM is done.
 - 2026-11-07: draft 2. Everything but the carafe is now hidden: kettle door on concealed hinges, a cone drawer with a flush front, brass Power/Brew buttons on the back, and a recessed plinth with a down-facing LED strip. The cone load cell is gone: bed weight is now computed as flow-meter water in minus carafe weight out, and a ToF sensor in the nozzle shroud checks the cone is in place.
+- 2026-11-07: draft 2.1. Kettle door modelled swung open on its hinges; all electronics, sensors and wiring runs added to the model; wiring table and ESP32 pin plan in the notes.

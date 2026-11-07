@@ -15,7 +15,7 @@ Trim heater block (2 halves),1,set,"6061-T6 aluminium, from exports/trim_heater_
 High-temp insulation,1,pcs,silicone foam sheet 6 mm + foam tube sleeve for hot lines,McMaster-Carr / Amazon,https://www.mcmaster.com/products/silicone-foam/,Search,20.00,USD,20.00,est
 "Bar load cell, 5 kg",2,pcs,"80 x 12.7 x 12.7 mm, M4 holes",Amazon / SparkFun,https://www.amazon.com/s?k=5kg+bar+load+cell+80mm,Search,8.00,USD,16.00,est; carafe scale + kettle scale
 HX711 load-cell amplifier,2,pcs,80 Hz mode,SparkFun / Amazon,https://www.sparkfun.com/products/13879,Product,4.00,USD,8.00,est
-ESP32-S3 DevKitC,1,pcs,"Wi-Fi + BLE, web app on device, ESPHome/MQTT optional",Digi-Key / Amazon,https://www.digikey.com/en/products/result?keywords=ESP32-S3-DEVKITC-1,Search,15.00,USD,15.00,est
+ESP32-S3 DevKitC-1-N8,1,pcs,N8 variant (no octal PSRAM) so GPIO35-37 are free; Wi-Fi + BLE,Digi-Key / Amazon,https://www.digikey.com/en/products/result?keywords=ESP32-S3-DEVKITC-1-N8,Search,15.00,USD,15.00,est
 "Stepper motor, NEMA 17 pancake",2,pcs,polar nozzle: rotation + radial carriage,Amazon / StepperOnline,https://www.amazon.com/s?k=NEMA+17+pancake+stepper+motor,Search,12.00,USD,24.00,est; concept-level
 TMC2209 stepper driver,3,pcs,2 nozzle axes + pump,Amazon / BigTreeTech,https://www.amazon.com/s?k=TMC2209+stepper+driver+module,Search,6.00,USD,18.00,est
 Logic-level MOSFET module,1,pcs,"IRLB8721 or similar, >=10 A, heater PWM",Amazon,https://www.amazon.com/s?k=IRLB8721+MOSFET+module,Search,6.00,USD,6.00,est
@@ -29,7 +29,7 @@ Birch plywood 12 mm,1,sheet,"610 x 1220 mm (2 x 4 ft), dividers + shelves",Home 
 Food-safe hardwax oil,1,pcs,e.g. Osmo Polyx or Rubio Monocoat,Woodcraft / Amazon,https://www.amazon.com/s?k=Osmo+Polyx+hardwax+oil,Search,30.00,USD,30.00,est
 3D-printed inserts PA12,1,set,"MJF PA12: v60_holder, cone_lc_mount, drip_tray, drip_grate, carafe_platform, kettle_platform, lc_spacer x3, pump_cradle",JLC3DP,https://jlc3dp.com/,Quote,75.00,USD,75.00,est; quote from exports/*.stl
 3D-printed electronics tray PETG,1,pcs,FDM PETG,JLC3DP / Craftcloud,https://craftcloud3d.com/,Quote,15.00,USD,15.00,est
-"Fasteners, heat-set inserts, wire, connectors",1,set,"M3/M4 stainless screws, brass inserts, #8 wood screws, 22 AWG + 16 AWG wire, JST/Wago",Amazon / McMaster-Carr,https://www.mcmaster.com/,Search,40.00,USD,40.00,est
+"Fasteners, heat-set inserts, connectors",1,set,"M3/M4 stainless screws, brass inserts, #8 wood screws, JST-XH kit, Wago, ferrules",Amazon / McMaster-Carr,https://www.mcmaster.com/,Search,30.00,USD,30.00,est
 "Brass push button, 19 mm latching (Power)",1,pcs,"brass anti-vandal, latching, LED ring 24 V",Amazon,https://www.amazon.com/s?k=19mm+brass+latching+push+button+LED+ring+24V,Search,12.00,USD,12.00,"est; drives the main power relay, so it doubles as the hardware stop"
 "Brass push button, 19 mm momentary (Brew)",1,pcs,"brass anti-vandal, momentary, LED ring 24 V",Amazon,https://www.amazon.com/s?k=19mm+brass+momentary+push+button+LED+ring+24V,Search,10.00,USD,10.00,est; single default brew
 "Main power relay, 24 V coil",1,pcs,">=15 A contacts at 24 V DC, PCB or socket mount",Digi-Key / Amazon,https://www.amazon.com/s?k=24V+DC+coil+relay+30A+automotive,Search,8.00,USD,8.00,est; brass switch only carries coil current
@@ -42,3 +42,8 @@ ToF distance sensor VL53L1X,1,pcs,I2C breakout,Adafruit / SparkFun,https://www.a
 "Addressable LED strip, 24 V, IP65",2,m,"24 V addressable (WS2811/WS2814 type), silicone sleeve, 60 LED/m",Amazon,https://www.amazon.com/s?k=24V+addressable+LED+strip+IP65+WS2814,Search,14.00,USD,28.00,est; ~1.6 m around the base underside; VERIFY chip vs firmware
 Aluminium LED channel + opal diffuser,2,m,17 x 8 mm surface channel with end caps,Amazon,https://www.amazon.com/s?k=aluminum+LED+channel+17mm+opal+diffuser,Search,8.00,USD,16.00,est; VERIFY size vs led_ch in params
 Logic level shifter 74AHCT125,1,pcs,3.3 V to 5 V for LED data,Adafruit,https://www.adafruit.com/product/1787,Product,2.00,USD,2.00,est
+Silicone hookup wire kit,1,set,"22 AWG 6 colours + 16 AWG red/black, 200 C rated",Amazon,https://www.amazon.com/s?k=silicone+wire+kit+22AWG+16AWG,Search,25.00,USD,25.00,est; silicone near the heater block
+Shielded 3-core cable for PT1000,2,m,"3-core shielded, PTFE or silicone jacket",Amazon,https://www.amazon.com/s?k=3+core+shielded+cable+PTFE,Search,6.00,USD,12.00,est
+"Stepper cable, 4-core",3,pcs,"1 m, JST-XH to motor",Amazon,https://www.amazon.com/s?k=stepper+motor+cable+1m+4+pin,Search,3.00,USD,9.00,est
+Cable grommets 20 mm,15,pcs,"rubber, for 12 mm panel",Amazon,https://www.amazon.com/s?k=20mm+rubber+cable+grommet,Search,0.40,USD,6.00,est; rear divider pass-throughs
+Fibreglass sleeving 3 mm,1,m,for NTC and cutout leads on the heater block,Amazon,https://www.amazon.com/s?k=fiberglass+sleeving+3mm+high+temperature,Search,6.00,USD,6.00,est

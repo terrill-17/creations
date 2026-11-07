@@ -47,6 +47,17 @@ GROUPS = {
     "[0.78, 0.62, 0.28]": "Brass buttons",
     "[1, 0.86, 0.6]": "LED glow",
     "[0.82, 0.83, 0.85]": "Slides and LED channel",
+    "[0.95, 0.55, 0.15]": "Sensors",
+    "[0.12, 0.3, 0.6]": "Electronics",
+    "[0.08, 0.08, 0.1]": "Electronics",
+    "[0.6, 0.1, 0.5]": "Electronics",
+    "[0.4, 0.4, 0.45]": "Power hardware (relay, fuse, DC jack)",
+    "[0.18, 0.18, 0.2]": "Kettle relay outlet (mains, listed)",
+    "[0.85, 0.2, 0.15]": "Wiring: 24 V and heater power",
+    "[0.95, 0.8, 0.2]": "Wiring: sensors",
+    "[0.5, 0.35, 0.7]": "Wiring: steppers",
+    "[0.2, 0.75, 0.8]": "Wiring: switches, buttons, LEDs",
+    "[0.92, 0.92, 0.92]": "Wiring: mains cords",
 }
 
 PARTS = {
@@ -125,7 +136,7 @@ CATEGORIES = [
                         "heater", "cutout", "heater block", "insulation", "v60"]),
     ("Sensing", ["pt1000", "max31865", "ntc", "load cell", "hx711", "tof", "reed"]),
     ("Control and motion", ["esp32", "stepper", "tmc2209", "mosfet", "nozzle mechanism",
-                            "power supply", "buck", "dc jack", "button", "relay", "level shifter"]),
+                            "power supply", "buck", "dc jack", "button", "relay", "level shifter", "wire", "cable", "grommet", "sleeving"]),
     ("Body, doors and lighting", ["plywood", "oil", "printed", "fasteners", "hinge", "forstner", "latch", "slides", "led strip", "led channel"]),
 ]
 
@@ -150,7 +161,7 @@ def main():
     OUT.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory() as t:
         build_assembly(Path(t))
-        build_assembly(Path(t), "assembly_open", ("-D", "drawer_open=160", "-D", "door_open=true"))
+        build_assembly(Path(t), "assembly_open", ("-D", "drawer_open=160", "-D", "door_angle=105"))
     build_parts()
     build_bom()
     # Artifact pages don't serve .glb, so ship each model as base64 text too.
