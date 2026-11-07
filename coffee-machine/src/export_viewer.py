@@ -43,12 +43,15 @@ GROUPS = {
     "[0.1, 0.1, 0.1]": "Pump and motors",
     "[0.1, 0.5, 0.2]": "Electronics",
     "[0.8, 0.1, 0.1]": "Buttons and LED ring",
-    "[0.9, 0.9, 1]": "Buttons and LED ring",
+    "[0.86, 0.72, 0.52]": "Door and drawer fronts",
+    "[0.78, 0.62, 0.28]": "Brass buttons",
+    "[1, 0.86, 0.6]": "LED glow",
+    "[0.82, 0.83, 0.85]": "Slides and LED channel",
 }
 
 PARTS = {
-    "v60_holder": "V60 holder",
-    "cone_lc_mount": "Cone load-cell mount",
+    "drawer_tray": "Cone drawer tray",
+    "nozzle_shroud": "Nozzle shroud",
     "drip_tray": "Drip tray",
     "drip_grate": "Drip grate",
     "carafe_platform": "Carafe scale platform",
@@ -77,9 +80,9 @@ def load(path, colour):
     return m
 
 
-def build_assembly(tmp: Path):
+def build_assembly(tmp: Path, name="assembly", extra=()):
     listing = subprocess.run(
-        ["openscad", "-D", 'pick="__list__"', "-D", "show_side=true",
+        ["openscad", "-D", 'pick="__list__"', "-D", "show_side=true", *extra,
          "-o", str(tmp / "list.csg"), "assembly.scad"],
         cwd=SRC, check=True, capture_output=True, text=True).stderr
     colours = sorted(set(re.findall(r'PAINT\|([^"]+)"', listing)))
@@ -89,8 +92,8 @@ def build_assembly(tmp: Path):
 
     def one(i_c):
         i, c = i_c
-        stl = tmp / f"c{i}.stl"
-        openscad(["-D", f'pick="{c}"', "-D", "show_side=true", "assembly.scad"], stl)
+        stl = tmp / f"{name}_c{i}.stl"
+        openscad(["-D", f'pick="{c}"', "-D", "show_side=true", *extra, "assembly.scad"], stl)
         return c, stl
 
     with ThreadPoolExecutor(8) as ex:
@@ -104,8 +107,8 @@ def build_assembly(tmp: Path):
         node = f"g{i}"
         scene.add_geometry(load(stl, rgba(c)), node_name=node, geom_name=node)
         meta[node] = {"label": GROUPS[c], "rgba": [x / 255 for x in rgba(c)]}
-    scene.export(OUT / "assembly.glb")
-    json.dump(meta, open(OUT / "assembly_groups.json", "w"), indent=1)
+    scene.export(OUT / f"{name}.glb")
+    json.dump(meta, open(OUT / f"{name}_groups.json", "w"), indent=1)
 
 
 def build_parts():
@@ -120,10 +123,10 @@ def build_parts():
 CATEGORIES = [
     ("Water and heat", ["kettle", "outlet", "pump", "flow meter", "tube", "tubing", "tee",
                         "heater", "cutout", "heater block", "insulation", "v60"]),
-    ("Sensing", ["pt1000", "max31865", "ntc", "load cell", "hx711"]),
+    ("Sensing", ["pt1000", "max31865", "ntc", "load cell", "hx711", "tof", "reed"]),
     ("Control and motion", ["esp32", "stepper", "tmc2209", "mosfet", "nozzle mechanism",
-                            "power supply", "buck", "dc jack", "button", "led ring"]),
-    ("Body and inserts", ["plywood", "oil", "printed", "fasteners"]),
+                            "power supply", "buck", "dc jack", "button", "relay", "level shifter"]),
+    ("Body, doors and lighting", ["plywood", "oil", "printed", "fasteners", "hinge", "forstner", "latch", "slides", "led strip", "led channel"]),
 ]
 
 
@@ -147,6 +150,7 @@ def main():
     OUT.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory() as t:
         build_assembly(Path(t))
+        build_assembly(Path(t), "assembly_open", ("-D", "drawer_open=160", "-D", "door_open=true"))
     build_parts()
     build_bom()
     # Artifact pages don't serve .glb, so ship each model as base64 text too.

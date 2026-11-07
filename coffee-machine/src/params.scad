@@ -56,12 +56,34 @@ lc_hole_end   = 5;
 /* [Brew bay stack, bottom to top] */
 scale_h      = 32;     // carafe scale: spacer + beam + platform
 tray_h       = 18;     // drip tray with grate
-cone_gap     = 8;      // carafe top to V60 plate
+cone_gap     = 16;     // carafe top to V60 plate (drawer tray floor sits in this gap)
 holder_z     = floor_z + scale_h + tray_h + carafe_h + cone_gap; // V60 seat
 nozzle_gap   = 25;     // nozzle tip above the V60 rim
 nozzle_z     = holder_z + v60_plate_t + v60_h + nozzle_gap;
 brew_cx      = brew_x0 + brew_bay_w/2;   // centre line of cone and carafe
 brew_cy      = 105;
+
+/* [Plinth: recessed base so the cabinet floats over a glow line] */
+plinth_h     = 25;     // 1"
+plinth_inset = 25;     // set back from every edge of the cabinet
+led_inset    = 10;     // LED channel centre-line, in from the cabinet edge
+led_ch       = [17, 8];// aluminium channel w x h (VERIFY against bought channel)
+
+/* [Fronts: full-overlay doors cut from one 18 mm panel] */
+front_t   = 18;
+reveal    = 2.5;       // gap between fronts and around edges
+hinge_cup = 35;        // concealed cup hinge bore
+// kettle door covers the whole left column; drawer front covers the brew
+// column from just above the carafe opening to the top
+drawer_front_z0 = holder_z - 12;   // bottom edge of the drawer front
+
+/* [Cone drawer] */
+slide_l    = 200;      // VERIFY: 8" full-extension mini ball-bearing slides
+slide_t    = 12.7;
+drawer_w   = brew_bay_w - 2*slide_t - 1;
+drawer_d   = slide_l;
+drawer_floor = 5;
+drawer_wall_h = 30;    // splash wall around the cone
 
 /* [Nozzle: polar mechanism, concept level in this draft] */
 spiral_r_max = 45;     // radial travel needed to reach the V60-02 bed edge
