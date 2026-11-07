@@ -1,0 +1,28 @@
+# OpenSCAD
+*.scad.bak
+*.echo
+*.csg
+
+# CadQuery / Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Blender
+*.blend1
+*.blend2
+
+# Slicer and preview output
+*.gcode
+*.bgcode
+*.png.tmp
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db

@@ -1,0 +1,16 @@
+# CAD and fabrication binaries go through Git LFS
+*.stl  filter=lfs diff=lfs merge=lfs -text
+*.STL  filter=lfs diff=lfs merge=lfs -text
+*.3mf  filter=lfs diff=lfs merge=lfs -text
+*.step filter=lfs diff=lfs merge=lfs -text
+*.stp  filter=lfs diff=lfs merge=lfs -text
+*.STEP filter=lfs diff=lfs merge=lfs -text
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.f3d  filter=lfs diff=lfs merge=lfs -text
+
+# Text formats stay in git so diffs work
+*.scad text
+*.py   text
+*.dxf  text
+*.svg  text
+*.csv  text
