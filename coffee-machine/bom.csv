@@ -1,36 +1,36 @@
-item,qty,unit,spec,source,url,unit_cost,currency,total,notes
-"Electric kettle, plain boil-only",1,pcs,"~1.0 L, stainless interior, concealed element, cordless 360 base, UL/ETL listed, rocker switch that stays latched when power is cut",Amazon / Target,,30.00,USD,30.00,"est; VERIFY model: must resume heating when outlet power returns, body <=165 mm dia"
-Switched outlet module,1,pcs,"UL-listed relay outlet controlled by 3-48 V DC signal (e.g. Digital Loggers IoT Relay)",Amazon / Digital Loggers,https://www.digital-loggers.com/iot2.html,35.00,USD,35.00,est; machine switches the kettle without any mains wiring
-"Peristaltic pump, 24 V stepper-driven",1,pcs,"300-600 mL/min, platinum silicone or BPT tube rated >=100 C",Amazon / AliExpress (Kamoer or similar),,70.00,USD,70.00,"est; VERIFY flow, tube temp rating, body size vs pump_cradle"
-Flow meter Digmesa Nano Inox,1,pcs,"1.2 mm nozzle, 0.05-0.5 L/min, 316 SS/PEEK/PVDF, LFGB, max 100 C, +-2%",Daitron / Teesing / espresso parts shops,https://www.daitron.com/documents/digmesa-nano-inox.pdf,50.00,USD,50.00,est; mounted after pump and before trim heater (~90 C)
-316 SS tube 1/4 in OD,1,m,"0.035 in wall, seamless, food grade",McMaster-Carr,https://www.mcmaster.com/,25.00,USD,25.00,"est; dip wand, heater serpentine (U-bend R16), nozzle"
-Platinum-cured silicone tubing,2,m,"food grade (FDA/NSF-51), ID to suit pump and 1/4 in tube",McMaster-Carr / Amazon,,8.00,USD,16.00,est
-"316 SS compression tee, 1/4 in tube x 1/8 NPT branch",1,pcs,for pre-nozzle PT1000 probe,McMaster-Carr,https://www.mcmaster.com/,30.00,USD,30.00,est
-"PT1000 RTD probe, 316 SS sheath",2,pcs,"3-wire, class A, 1/8 NPT fitting for tee; plain 4-6 mm sheath for kettle wand",Amazon / Auber Instruments,,15.00,USD,30.00,est; kettle + pre-nozzle
-MAX31865 RTD amplifier board,2,pcs,set for PT1000 (4300 ohm ref),Adafruit / Amazon,https://www.adafruit.com/product/3328,15.00,USD,30.00,est
-"Cartridge heater, 24 V",1,pcs,"~150 W, 10 mm dia x 100 mm, fibreglass leads",Amazon / AliExpress,,15.00,USD,15.00,"est; VERIFY size matches heater bore in trim_heater_block.py"
-"Thermal cutout, 120 C normally-closed",2,pcs,"KSD301-style bolt-on, rated for >=8 A at 24 V DC",Amazon / Digi-Key,,3.00,USD,6.00,"est; VERIFY DC rating, else switch a relay coil instead"
-NTC thermistor 100k glass bead,2,pcs,heater block control sensor,Amazon,,2.00,USD,4.00,est
-Trim heater block (2 halves),1,set,"6061-T6 aluminium, from exports/trim_heater_block_*.step",Xometry / PCBWay CNC,,90.00,USD,90.00,"est one-off quote; M4 tapping in bottom half"
-High-temp insulation,1,pcs,"silicone foam sheet 6 mm + foam tube sleeve for hot lines",McMaster-Carr / Amazon,,20.00,USD,20.00,est
-"Bar load cell, 5 kg",2,pcs,"80 x 12.7 x 12.7 mm, M4 holes",Amazon / SparkFun,,8.00,USD,16.00,est; carafe scale + kettle scale
-"Bar load cell, 1 kg",1,pcs,"80 x 12.7 x 12.7 mm, M4 holes",Amazon / SparkFun,,8.00,USD,8.00,est; cantilevered V60 holder (bed weight)
-HX711 load-cell amplifier,3,pcs,80 Hz mode,SparkFun / Amazon,,4.00,USD,12.00,est
-ESP32-S3 DevKitC,1,pcs,"Wi-Fi + BLE, web app on device, ESPHome/MQTT optional",Digi-Key / Amazon,,15.00,USD,15.00,est
-"Stepper motor, NEMA 17 pancake",2,pcs,polar nozzle: rotation + radial carriage,Amazon / StepperOnline,,12.00,USD,24.00,est; concept-level
-TMC2209 stepper driver,3,pcs,2 nozzle axes + pump,Amazon / BigTreeTech,,6.00,USD,18.00,est
-Logic-level MOSFET module,1,pcs,"IRLB8721 or similar, >=10 A, heater PWM",Amazon,,6.00,USD,6.00,est
-"Nozzle mechanism hardware",1,set,"thin-section bearing, GT2 belt + pulleys, MGN7 rail ~100 mm, M3 screws",Amazon,,40.00,USD,40.00,est; concept-level until mechanism is designed
-"24 V power supply, UL listed",1,pcs,"desktop brick 24 V 9.2 A (e.g. Mean Well GST220A24)",Digi-Key / Mouser,https://www.meanwell.com/,50.00,USD,50.00,est; heater 150 W + pump + steppers + logic
-Buck converter 24 V to 5 V,1,pcs,3 A,Amazon / Pololu,,8.00,USD,8.00,est
-Panel DC jack + inline fuse,1,set,"5.5 x 2.5 mm, 10 A blade fuse holder",Amazon,,8.00,USD,8.00,est
-Off button (hardware stop),1,pcs,"22 mm latching, rated >=10 A DC, in the main 24 V line",Amazon,,10.00,USD,10.00,est; cuts heater + pump + controller (kettle relay drops too)
-Brew button,1,pcs,"22 mm momentary stainless with LED",Amazon,,6.00,USD,6.00,est
-WS2812 LED ring,1,pcs,"16 LED, 68 mm OD",Adafruit / Amazon,,8.00,USD,8.00,est; status ring on fascia
-"Hario V60-02 plastic dripper",1,pcs,VD-02T,Amazon / Hario,,10.00,USD,10.00,removable insert; handle gap in holder
-"Birch plywood 18 mm",1,sheet,"1220 x 1220 mm (4 x 4 ft), outer panels",Home Depot / Lowes,,65.00,USD,65.00,est; cut in-house on table saw
-"Birch plywood 12 mm",1,sheet,"610 x 1220 mm (2 x 4 ft), dividers + shelves",Home Depot / Lowes,,30.00,USD,30.00,est; cut in-house
-Food-safe hardwax oil,1,pcs,e.g. Osmo Polyx or Rubio Monocoat,Woodcraft / Amazon,,30.00,USD,30.00,est
-3D-printed inserts PA12,1,set,"MJF PA12: v60_holder, cone_lc_mount, drip_tray, drip_grate, carafe_platform, kettle_platform, lc_spacer x3, pump_cradle",JLC3DP,https://jlc3dp.com/,75.00,USD,75.00,est; quote from exports/*.stl
-3D-printed electronics tray PETG,1,pcs,FDM PETG,JLC3DP / Craftcloud,,15.00,USD,15.00,est
-"Fasteners, heat-set inserts, wire, connectors",1,set,"M3/M4 stainless screws, brass inserts, #8 wood screws, 22 AWG + 16 AWG wire, JST/Wago",Amazon / McMaster-Carr,,40.00,USD,40.00,est
+item,qty,unit,spec,source,url,link_type,unit_cost,currency,total,notes
+"Electric kettle, plain boil-only",1,pcs,"~1.0 L, stainless interior, concealed element, cordless 360 base, UL/ETL listed, rocker switch that stays latched when power is cut",Amazon / Target,https://www.amazon.com/s?k=1.0L+stainless+steel+electric+kettle+cordless,Search,30.00,USD,30.00,"est; VERIFY model: must resume heating when outlet power returns, body <=165 mm dia"
+Switched outlet module,1,pcs,UL-listed relay outlet controlled by 3-48 V DC signal (e.g. Digital Loggers IoT Relay),Amazon / Digital Loggers,https://www.digital-loggers.com/iot2.html,Product,35.00,USD,35.00,est; machine switches the kettle without any mains wiring
+"Peristaltic pump, 24 V stepper-driven",1,pcs,"300-600 mL/min, platinum silicone or BPT tube rated >=100 C",Amazon / AliExpress (Kamoer or similar),https://www.amazon.com/s?k=24V+stepper+motor+peristaltic+pump+high+flow,Search,70.00,USD,70.00,"est; VERIFY flow, tube temp rating, body size vs pump_cradle"
+Flow meter Digmesa Nano Inox,1,pcs,"1.2 mm nozzle, 0.05-0.5 L/min, 316 SS/PEEK/PVDF, LFGB, max 100 C, +-2%",Daitron / Teesing / espresso parts shops,https://www.daitron.com/documents/digmesa-nano-inox.pdf,Datasheet,50.00,USD,50.00,est; mounted after pump and before trim heater (~90 C)
+316 SS tube 1/4 in OD,1,m,"0.035 in wall, seamless, food grade",McMaster-Carr,https://www.mcmaster.com/products/316-stainless-steel-tubing/,Search,25.00,USD,25.00,"est; dip wand, heater serpentine (U-bend R16), nozzle"
+Platinum-cured silicone tubing,2,m,"food grade (FDA/NSF-51), ID to suit pump and 1/4 in tube",McMaster-Carr / Amazon,https://www.mcmaster.com/products/platinum-cured-silicone-rubber-tubing/,Search,8.00,USD,16.00,est
+"316 SS compression tee, 1/4 in tube x 1/8 NPT branch",1,pcs,for pre-nozzle PT1000 probe,McMaster-Carr,https://www.mcmaster.com/products/compression-tube-fittings/,Search,30.00,USD,30.00,est
+"PT1000 RTD probe, 316 SS sheath",2,pcs,"3-wire, class A, 1/8 NPT fitting for tee; plain 4-6 mm sheath for kettle wand",Amazon / Auber Instruments,https://www.amazon.com/s?k=PT1000+RTD+probe+316+stainless+3+wire+1%2F8+NPT,Search,15.00,USD,30.00,est; kettle + pre-nozzle
+MAX31865 RTD amplifier board,2,pcs,set for PT1000 (4300 ohm ref),Adafruit / Amazon,https://www.adafruit.com/product/3328,Product,15.00,USD,30.00,est
+"Cartridge heater, 24 V",1,pcs,"~150 W, 10 mm dia x 100 mm, fibreglass leads",Amazon / AliExpress,https://www.amazon.com/s?k=24V+150W+cartridge+heater+10mm+x+100mm,Search,15.00,USD,15.00,est; VERIFY size matches heater bore in trim_heater_block.py
+"Thermal cutout, 120 C normally-closed",2,pcs,"KSD301-style bolt-on, rated for >=8 A at 24 V DC",Amazon / Digi-Key,https://www.amazon.com/s?k=KSD301+120C+normally+closed+thermal+switch,Search,3.00,USD,6.00,"est; VERIFY DC rating, else switch a relay coil instead"
+NTC thermistor 100k glass bead,2,pcs,heater block control sensor,Amazon,https://www.amazon.com/s?k=100k+NTC+glass+bead+thermistor,Search,2.00,USD,4.00,est
+Trim heater block (2 halves),1,set,"6061-T6 aluminium, from exports/trim_heater_block_*.step",Xometry / PCBWay CNC,https://www.xometry.com/,Quote,90.00,USD,90.00,est one-off quote; M4 tapping in bottom half
+High-temp insulation,1,pcs,silicone foam sheet 6 mm + foam tube sleeve for hot lines,McMaster-Carr / Amazon,https://www.mcmaster.com/products/silicone-foam/,Search,20.00,USD,20.00,est
+"Bar load cell, 5 kg",2,pcs,"80 x 12.7 x 12.7 mm, M4 holes",Amazon / SparkFun,https://www.amazon.com/s?k=5kg+bar+load+cell+80mm,Search,8.00,USD,16.00,est; carafe scale + kettle scale
+"Bar load cell, 1 kg",1,pcs,"80 x 12.7 x 12.7 mm, M4 holes",Amazon / SparkFun,https://www.amazon.com/s?k=1kg+bar+load+cell+80mm,Search,8.00,USD,8.00,est; cantilevered V60 holder (bed weight)
+HX711 load-cell amplifier,3,pcs,80 Hz mode,SparkFun / Amazon,https://www.sparkfun.com/products/13879,Product,4.00,USD,12.00,est
+ESP32-S3 DevKitC,1,pcs,"Wi-Fi + BLE, web app on device, ESPHome/MQTT optional",Digi-Key / Amazon,https://www.digikey.com/en/products/result?keywords=ESP32-S3-DEVKITC-1,Search,15.00,USD,15.00,est
+"Stepper motor, NEMA 17 pancake",2,pcs,polar nozzle: rotation + radial carriage,Amazon / StepperOnline,https://www.amazon.com/s?k=NEMA+17+pancake+stepper+motor,Search,12.00,USD,24.00,est; concept-level
+TMC2209 stepper driver,3,pcs,2 nozzle axes + pump,Amazon / BigTreeTech,https://www.amazon.com/s?k=TMC2209+stepper+driver+module,Search,6.00,USD,18.00,est
+Logic-level MOSFET module,1,pcs,"IRLB8721 or similar, >=10 A, heater PWM",Amazon,https://www.amazon.com/s?k=IRLB8721+MOSFET+module,Search,6.00,USD,6.00,est
+Nozzle mechanism hardware,1,set,"thin-section bearing, GT2 belt + pulleys, MGN7 rail ~100 mm, M3 screws",Amazon,https://www.amazon.com/s?k=MGN7+linear+rail+100mm,Search,40.00,USD,40.00,est; concept-level until mechanism is designed
+"24 V power supply, UL listed",1,pcs,desktop brick 24 V 9.2 A (e.g. Mean Well GST220A24),Digi-Key / Mouser,https://www.digikey.com/en/products/result?keywords=GST220A24,Search,50.00,USD,50.00,est; heater 150 W + pump + steppers + logic
+Buck converter 24 V to 5 V,1,pcs,3 A,Amazon / Pololu,https://www.amazon.com/s?k=24V+to+5V+3A+buck+converter,Search,8.00,USD,8.00,est
+Panel DC jack + inline fuse,1,set,"5.5 x 2.5 mm, 10 A blade fuse holder",Amazon,https://www.amazon.com/s?k=5.5x2.5+panel+mount+DC+jack,Search,8.00,USD,8.00,est
+Off button (hardware stop),1,pcs,"22 mm latching, rated >=10 A DC, in the main 24 V line",Amazon,https://www.amazon.com/s?k=22mm+latching+push+button+10A,Search,10.00,USD,10.00,est; cuts heater + pump + controller (kettle relay drops too)
+Brew button,1,pcs,22 mm momentary stainless with LED,Amazon,https://www.amazon.com/s?k=22mm+momentary+stainless+push+button+LED+24V,Search,6.00,USD,6.00,est
+WS2812 LED ring,1,pcs,"24 LED NeoPixel ring, 66 mm OD",Adafruit / Amazon,https://www.adafruit.com/product/1586,Product,8.00,USD,8.00,est; status ring on fascia
+Hario V60-02 plastic dripper,1,pcs,VD-02T,Amazon / Hario,https://www.amazon.com/s?k=Hario+V60+02+plastic+dripper+VD-02T,Search,10.00,USD,10.00,removable insert; handle gap in holder
+Birch plywood 18 mm,1,sheet,"1220 x 1220 mm (4 x 4 ft), outer panels",Home Depot / Lowes,https://www.homedepot.com/s/birch%2520plywood%25203%252F4,Search,65.00,USD,65.00,est; cut in-house on table saw
+Birch plywood 12 mm,1,sheet,"610 x 1220 mm (2 x 4 ft), dividers + shelves",Home Depot / Lowes,https://www.homedepot.com/s/birch%2520plywood%25201%252F2,Search,30.00,USD,30.00,est; cut in-house
+Food-safe hardwax oil,1,pcs,e.g. Osmo Polyx or Rubio Monocoat,Woodcraft / Amazon,https://www.amazon.com/s?k=Osmo+Polyx+hardwax+oil,Search,30.00,USD,30.00,est
+3D-printed inserts PA12,1,set,"MJF PA12: v60_holder, cone_lc_mount, drip_tray, drip_grate, carafe_platform, kettle_platform, lc_spacer x3, pump_cradle",JLC3DP,https://jlc3dp.com/,Quote,75.00,USD,75.00,est; quote from exports/*.stl
+3D-printed electronics tray PETG,1,pcs,FDM PETG,JLC3DP / Craftcloud,https://craftcloud3d.com/,Quote,15.00,USD,15.00,est
+"Fasteners, heat-set inserts, wire, connectors",1,set,"M3/M4 stainless screws, brass inserts, #8 wood screws, 22 AWG + 16 AWG wire, JST/Wago",Amazon / McMaster-Carr,https://www.mcmaster.com/,Search,40.00,USD,40.00,est

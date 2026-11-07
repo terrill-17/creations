@@ -21,3 +21,6 @@ run -q -o ../images/assembly_front.png --imgsize=1400,1100 --viewall --autocente
 run -q -D show_panels=false -o ../images/assembly_internals.png --imgsize=1400,1100 \
     --viewall --autocenter --camera=0,0,0,65,0,330,0 --colorscheme=Tomorrow assembly.scad
 echo "renders written to images/"
+
+# Interactive viewer page data (assembly + part models, BOM json) in ../viewer/
+python3 export_viewer.py

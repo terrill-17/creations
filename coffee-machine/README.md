@@ -5,6 +5,8 @@
 
 ![Assembly, front](images/assembly_front.png)
 
+**Interactive 3D model and BOM:** [Pour-Over Machine Draft 1](https://claude.ai/artifact/FuLXcmYcK9QPcySvpjs3qe) (private artifact, built from `viewer/index.html` by `exports/build.sh`).
+
 ## Goal
 
 An automatic pour-over machine built around a standard Hario V60-02 insert and its paper filters. It controls the pour pattern (programmable spirals from a moving nozzle), water temperature and flow, and logs plenty of sensor data. You run it from a phone, or with physical **Brew** and **Off** buttons when no phone is handy.
@@ -123,7 +125,7 @@ Add 6 mm (¼") to shelf and divider lengths that sit in dados. Cut the dados on 
 ## Rebuilding exports
 
 ```
-./exports/build.sh     # needs openscad, python3 + cadquery, xvfb-run (headless)
+./exports/build.sh     # needs openscad, python3 + cadquery + trimesh, xvfb-run (headless)
 ```
 
 ## Log
