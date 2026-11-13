@@ -2,13 +2,14 @@
 // Units: mm. Select a part with -D 'part="name"' (see exports/build.sh).
 // Material: PA12 (MJF, JLC3DP) for anything near water, heat or steam;
 // PETG is fine for the electronics tray.
-// None of these parts touch brewing water or coffee: the V60 insert, the
-// carafe and the stainless/silicone water path are bought, food-grade parts.
+// None of these parts sit in the brewing water or coffee: the V60 insert,
+// the carafe and the stainless/silicone water path are bought, food-grade
+// parts. The drawer tray and nozzle shroud only see drips and steam.
 
 include <params.scad>
 
 /* [Part] */
-part = "all";  // [all, v60_holder, cone_lc_mount, drip_tray, drip_grate, carafe_platform, kettle_platform, lc_spacer, electronics_tray, pump_cradle]
+part = "all";  // [all, drawer_tray, nozzle_shroud, drip_tray, drip_grate, carafe_platform, kettle_platform, lc_spacer, electronics_tray, pump_cradle]
 
 /* [Heat-set inserts] */
 insert_m3_d = 4.0;   // hole for M3 brass heat-set insert (check insert brand)
@@ -27,49 +28,66 @@ module lc_end_holes(d=lc_hole_d, h=50) {
     for (i=[0,1]) translate([i*lc_hole_pitch, 0, -1]) cylinder(d=d, h=h);
 }
 
-// ---------- V60 holder ----------
-// Ring that locates the V60 base plate, with a gap for the handle, on an arm
-// that bolts to the free end of the cone load cell. Origin = cone centre.
-holder_t     = 6;
-holder_wall  = 6;
-holder_arm_w = 24;
-holder_arm_l = 95;   // cone centre to load-cell bolt pattern
-module v60_holder() {
+// ---------- cone drawer tray ----------
+// Rides on two mini ball-bearing slides inside the brew column. Locates the
+// V60 base plate (handle gap toward the front so the cone lifts straight
+// up), drips through a centre hole into the carafe, and has a splash wall.
+// The wooden drawer front screws to the front lip. Origin: front-left
+// corner of the tray floor; cone centre at (drawer_w/2, brew_cy).
+module drawer_tray() {
     seat_d = v60_plate_d + 2*clearance;
-    od = seat_d + 2*holder_wall;
     difference() {
         union() {
-            cylinder(d=od, h=holder_t + v60_plate_t);
-            translate([-holder_arm_w/2, 0, 0])
-                cube([holder_arm_w, holder_arm_l + lc_hole_pitch + 10, holder_t]);
+            // floor
+            rounded_box([drawer_w, drawer_d, drawer_floor], r=4);
+            // splash wall (open at the front, where the drawer front closes it)
+            difference() {
+                rounded_box([drawer_w, drawer_d, drawer_floor + drawer_wall_h], r=4);
+                translate([wall, wall, drawer_floor]) rounded_box([drawer_w - 2*wall, drawer_d - 2*wall, 100], r=3);
+                translate([wall, -1, drawer_floor]) cube([drawer_w - 2*wall, wall + 2, 100]);
+            }
+            // seat ring
+            translate([drawer_w/2, brew_cy, 0]) cylinder(d=seat_d + 2*wall, h=drawer_floor + v60_plate_t);
+            // front lip for the wooden front: 2x M4 inserts
+            translate([0, 0, 0]) cube([drawer_w, 8, drawer_floor + drawer_wall_h]);
+            // slide mounting rails on both sides
+            for (x=[0, drawer_w - 6]) translate([x, 0, 0]) cube([6, drawer_d, drawer_floor + 14]);
         }
-        // seat for the base plate
-        translate([0, 0, holder_t]) cylinder(d=seat_d, h=50);
-        // drip-through hole
-        translate([0, 0, -1]) cylinder(d=v60_outlet_d + 4, h=50);
-        // handle gap (handle faces the front, -Y, so the cone lifts out forward)
-        translate([-(v60_handle_w + 4)/2, -od, holder_t])
-            cube([v60_handle_w + 4, od/2, 50]);
-        // load-cell bolts (M4 into heat-set inserts from below)
-        translate([0, holder_arm_l, 0]) rotate([0, 0, 90])
-            lc_end_holes(d=insert_m4_d, h=holder_t + 2);
+        translate([drawer_w/2, brew_cy, drawer_floor]) cylinder(d=seat_d, h=50);
+        translate([drawer_w/2, brew_cy, -1]) cylinder(d=v60_outlet_d + 4, h=50);
+        translate([drawer_w/2 - (v60_handle_w + 4)/2, brew_cy - seat_d, drawer_floor])
+            cube([v60_handle_w + 4, seat_d/2, 50]);
+        // drawer-front screws (M4 inserts from the front)
+        for (x=[drawer_w*0.25, drawer_w*0.75]) translate([x, -1, (drawer_floor + drawer_wall_h)/2])
+            rotate([-90, 0, 0]) cylinder(d=insert_m4_d, h=10);
+        // slide screws: 3 per side, M4 inserts from the outside (VERIFY slide hole pitch)
+        for (x=[-1, drawer_w - 5], y=[25, drawer_d/2, drawer_d - 25])
+            translate([x, y, 8]) rotate([0, 90, 0]) cylinder(d=insert_m4_d, h=7);
+        // magnet pocket for the drawer-closed reed switch (10 x 3 mm disc)
+        translate([drawer_w - 20, drawer_d - wall - 0.5, drawer_floor + 15]) rotate([-90, 0, 0]) cylinder(d=10.3, h=3.5);
     }
 }
 
-// ---------- cone load-cell wall mount ----------
-// Block that screws to the rear divider and holds the fixed end of the beam.
-module cone_lc_mount() {
-    bw = 40; bh = 30; bd = lc_hole_pitch + 2*lc_hole_end + 6;
+// ---------- nozzle shroud ----------
+// Hangs from the brew shelf around the nozzle sweep. Keeps spray and steam
+// inside the cone footprint and holds the downward ToF sensor (VL53L1X).
+// Origin: cone centre at the shelf underside, built downward.
+shroud_od = v60_rim_d + 12;
+shroud_h  = 40;
+module nozzle_shroud() {
     difference() {
-        cube([bw, bd, bh]);
-        // beam fixed-end holes, vertical
-        translate([bw/2, lc_hole_end + 3, bh - 12]) rotate([0, 0, 90])
-            lc_end_holes(d=insert_m4_d, h=20);
-        // two #8 wood screws into the divider, through the back face
-        for (x=[8, bw-8]) translate([x, bd + 1, bh/2]) rotate([90, 0, 0]) {
-            cylinder(d=4.5, h=bd + 2);
-            cylinder(d=9, h=bd - 6);   // counterbore from the front
+        union() {
+            translate([0, 0, -shroud_h]) cylinder(d=shroud_od, h=shroud_h);
+            // flange to the shelf, 3x M4 screws
+            translate([0, 0, -4]) cylinder(d=shroud_od + 24, h=4);
         }
+        translate([0, 0, -shroud_h - 1]) cylinder(d=shroud_od - 2*wall, h=shroud_h + 10);
+        for (a=[90, 210, 330]) rotate([0, 0, a]) translate([shroud_od/2 + 7, 0, -5]) cylinder(d=m4_clr, h=10);
+    }
+    // ToF sensor boss on the inside wall, looking down at the bed
+    difference() {
+        rotate([0, 0, 135]) translate([shroud_od/2 - wall - 14, -12, -14]) cube([14, 24, 14]);
+        rotate([0, 0, 135]) translate([shroud_od/2 - wall - 11, -6.5, -15]) cube([9, 13, 12]);
     }
 }
 
@@ -162,8 +180,8 @@ module pump_cradle() {
 }
 
 // ---------- layout ----------
-if (part == "v60_holder")       v60_holder();
-if (part == "cone_lc_mount")    cone_lc_mount();
+if (part == "drawer_tray")      drawer_tray();
+if (part == "nozzle_shroud")    rotate([180, 0, 0]) nozzle_shroud();
 if (part == "drip_tray")        drip_tray();
 if (part == "drip_grate")       drip_grate();
 if (part == "carafe_platform")  rotate([180, 0, 0]) carafe_platform();
@@ -172,8 +190,8 @@ if (part == "lc_spacer")        lc_spacer();
 if (part == "electronics_tray") electronics_tray();
 if (part == "pump_cradle")      pump_cradle();
 if (part == "all") {
-    v60_holder();
-    translate([90, 0, 0])   cone_lc_mount();
+    translate([-90, -100, 0]) drawer_tray();
+    translate([300, 0, 4]) rotate([180, 0, 0]) nozzle_shroud();
     translate([150, -60, 0]) drip_tray();
     translate([150 + tray_w + 10, -60, 0]) drip_grate();
     translate([-150, -140, 10]) carafe_platform();
