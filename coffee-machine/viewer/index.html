@@ -1,0 +1,373 @@
+<title>Pour-Over Machine</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: spec-sheet. Header strip with key figures, then a model bench
+   (viewport + part rail), then the BOM grouped by subsystem. */
+:root {
+  --bg: #f2f4f3;
+  --panel: #ffffff;
+  --fg: #19211f;
+  --muted: #5d6865;
+  --line: #d6dcda;
+  --accent: #0e7461;
+  --accent-soft: #dcefe9;
+  --warn: #9a5b00;
+  --warn-soft: #fbefd9;
+  --stage: #e6eae8;
+  --f-display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121816; --panel: #1a2220; --fg: #e4ebe8; --muted: #93a19c; --line: #2c3734;
+    --accent: #4cc3a6; --accent-soft: #173a32; --warn: #f0b45a; --warn-soft: #3a2c14; --stage: #0d1211;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121816; --panel: #1a2220; --fg: #e4ebe8; --muted: #93a19c; --line: #2c3734;
+  --accent: #4cc3a6; --accent-soft: #173a32; --warn: #f0b45a; --warn-soft: #3a2c14; --stage: #0d1211;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--fg); font: 16px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 26px; font-weight: 600; }
+h3 { font-size: 18px; font-weight: 600; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+a { color: var(--accent); }
+
+header { display: grid; gap: 14px; }
+.lede { color: var(--muted); max-width: 68ch; margin: 0; }
+.figs { display: flex; flex-wrap: wrap; gap: 10px 28px; padding-top: 6px; border-top: 1px solid var(--line); }
+.fig { display: grid; gap: 2px; padding-top: 10px; }
+.fig b { font: 600 22px/1.1 var(--f-display); }
+.fig span { font: 12px/1.2 var(--f-mono); color: var(--muted); }
+
+/* model bench */
+.bench { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; }
+@media (max-width: 860px) { .bench { grid-template-columns: minmax(0, 1fr); } }
+.stage { position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; aspect-ratio: 4 / 3; max-width: 100%; touch-action: none; }
+.stage canvas { display: block; width: 100%; height: 100%; }
+.stage .hint { position: absolute; left: 12px; bottom: 10px; font: 12px var(--f-mono); color: var(--muted); pointer-events: none; }
+.stage .status { position: absolute; inset: 0; display: grid; place-items: center; font: 14px var(--f-mono); color: var(--muted); }
+.stage .tools { position: absolute; right: 10px; top: 10px; display: flex; gap: 6px; }
+.btn { font: 500 13px var(--f-body); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .pick:focus-visible, input:focus-visible, .link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.rail { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px; display: grid; gap: 10px; }
+.picks { display: grid; gap: 4px; }
+.pick { text-align: left; font: 15px var(--f-body); color: var(--fg); background: none; border: 1px solid transparent; border-radius: 4px; padding: 6px 8px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+.pick small { font: 11px var(--f-mono); color: var(--muted); align-self: center; }
+.pick:hover { background: var(--accent-soft); }
+.pick[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.layers { display: grid; gap: 6px; }
+.layers label { display: flex; gap: 8px; align-items: center; font-size: 15px; cursor: pointer; }
+.sw { width: 12px; height: 12px; border-radius: 2px; border: 1px solid var(--line); flex: none; }
+dl.info { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 14px; }
+dl.info dt { color: var(--muted); }
+dl.info dd { margin: 0; }
+
+/* BOM */
+.bomhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px; }
+.note { font-size: 14px; color: var(--muted); margin: 0; max-width: 70ch; }
+.group { display: grid; gap: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.ghead { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.ghead .mono { color: var(--muted); }
+.row { display: grid; grid-template-columns: minmax(0, 2.2fr) 56px minmax(0, 1fr) 96px 120px; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); align-items: start; }
+.row:last-child { border-bottom: 0; }
+.row .name { font-weight: 600; }
+.row .spec { color: var(--muted); font-size: 14px; }
+.row .src { font-size: 14px; }
+.row .qty, .row .cost { font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; font-size: 14px; }
+.row .cost small { display: block; color: var(--muted); font-size: 11px; }
+.cols { font: 500 11px var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-block: 8px; }
+.cols .qty, .cols .cost { text-align: right; }
+.link { display: inline-flex; align-items: center; gap: 4px; font: 500 13px var(--f-body); text-decoration: none; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 4px 8px; white-space: nowrap; }
+.link:hover { background: var(--accent-soft); }
+.flag { display: inline-block; font: 500 11px var(--f-mono); color: var(--warn); background: var(--warn-soft); border-radius: 3px; padding: 1px 6px; margin-top: 4px; }
+.notes { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.total { display: flex; justify-content: space-between; padding: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+.total b { font: 600 24px var(--f-display); }
+@media (max-width: 720px) {
+  .cols { display: none; }
+  .row { grid-template-columns: minmax(0, 1fr) auto; }
+  .row .qty { grid-column: 2; grid-row: 1; }
+  .row .src { grid-column: 1 / -1; }
+  .row .cost { grid-column: 1; text-align: left; }
+  .row .act { grid-column: 2; justify-self: end; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">creations / coffee-machine · draft 2.1 · 2026-11-07</span>
+    <h1>Pour-over machine, draft 2</h1>
+    <p class="lede">An automatic V60-02 brewer with everything but the carafe hidden. The kettle sits behind a push-to-open door, the V60 rides in a hidden drawer, brass Power and Brew buttons sit on the back, and a recessed plinth lets an LED strip glow onto the counter. Every board, sensor and wiring run is modelled: untick Cabinet to see them. Drag to orbit, pinch or scroll to zoom, and right-drag or two-finger drag to pan.</p>
+    <div class="figs">
+      <div class="fig"><b class="mono">478 × 378 × 533</b><span>W × D × H mm incl. fronts and plinth · 18.8 × 14.9 × 21.0 in</span></div>
+      <div class="fig"><b class="mono" id="fig-total">$—</b><span>estimated BOM total</span></div>
+      <div class="fig"><b class="mono" id="fig-lines">—</b><span>BOM lines</span></div>
+      <div class="fig"><b class="mono">10</b><span>fabricated parts (9 printed, 1 CNC)</span></div>
+    </div>
+  </header>
+
+  <section class="bench" aria-label="3D model">
+    <div class="stage" id="stage">
+      <div class="status" id="status">Loading model…</div>
+      <div class="tools">
+        <button class="btn" id="reset" type="button">Reset view</button>
+      </div>
+      <span class="hint">Drag to orbit · scroll or pinch to zoom</span>
+    </div>
+    <div class="rail">
+      <div class="card">
+        <span class="eyebrow">Model</span>
+        <div class="picks" id="picks"></div>
+      </div>
+      <div class="card" id="layers-card">
+        <span class="eyebrow">Show in assembly</span>
+        <div class="layers" id="layers"></div>
+      </div>
+      <div class="card" id="info-card" hidden>
+        <span class="eyebrow">Part</span>
+        <h3 id="info-name"></h3>
+        <dl class="info" id="info"></dl>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:grid;gap:14px" aria-label="Bill of materials">
+    <div class="bomhead">
+      <h2>Bill of materials</h2>
+      <p class="note">All prices are estimates until quoted. Link labels say what they open: a <b>Product</b> page, a <b>Search</b> for parts that match the spec, a service to <b>Quote</b> our files, or a <b>Datasheet</b>. Items flagged VERIFY need a measurement or a check before you buy.</p>
+    </div>
+    <div id="bom" style="display:grid;gap:14px"></div>
+    <div class="total"><span>Estimated total</span><b class="mono" id="bom-total">$—</b></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const PARTS = [
+  { id: "assembly", name: "Assembly, closed", tag: "layout" },
+  { id: "assembly_open", name: "Assembly, door and drawer open", tag: "layout" },
+  { id: "drawer_tray", name: "Cone drawer tray", tag: "PA12", made: "JLC3DP MJF PA12", file: "exports/drawer_tray.stl", note: "Rides on two 200 mm mini slides. Seats the V60 base plate (handle gap to the front), drips through the centre into the carafe, splash wall all round. The wooden drawer front screws to its front lip; a magnet in the back trips the drawer-closed reed switch." },
+  { id: "nozzle_shroud", name: "Nozzle shroud", tag: "PA12", made: "JLC3DP MJF PA12", file: "exports/nozzle_shroud.stl", note: "Hangs from the brew shelf around the nozzle sweep to keep spray and steam over the cone. Holds a downward VL53L1X distance sensor that sees whether a cone is in place and how high the bed sits." },
+  { id: "drip_tray", name: "Drip tray", tag: "PA12", made: "JLC3DP MJF PA12", file: "exports/drip_tray.stl", note: "Sits on the carafe scale platform; finger notch at the front." },
+  { id: "drip_grate", name: "Drip grate", tag: "PA12", made: "JLC3DP MJF PA12", file: "exports/drip_grate.stl", note: "Drops onto the ledge inside the tray." },
+  { id: "carafe_platform", name: "Carafe scale platform", tag: "PA12", made: "JLC3DP MJF PA12", file: "exports/carafe_platform.stl", note: "Ribbed plate on the free end of the 5 kg carafe load cell. M4 heat-set inserts." },
+  { id: "kettle_platform", name: "Kettle scale platform", tag: "PA12", made: "JLC3DP MJF PA12", file: "exports/kettle_platform.stl", note: "Carries the kettle and its power base; gives water remaining for the start interlocks." },
+  { id: "lc_spacer", name: "Load-cell spacer", tag: "PA12 ×3", made: "JLC3DP MJF PA12", file: "exports/lc_spacer.stl", note: "Lifts the fixed end of each beam so the free end can flex." },
+  { id: "electronics_tray", name: "Electronics tray", tag: "PETG", made: "JLC3DP or Craftcloud PETG", file: "exports/electronics_tray.stl", note: "Slides into dados in the rear tech strip. 10 mm pegboard of M3 insert holes so boards can move while the layout settles." },
+  { id: "pump_cradle", name: "Pump cradle", tag: "PA12", made: "JLC3DP MJF PA12", file: "exports/pump_cradle.stl", note: "Strap cradle for the peristaltic pump. Resize once the pump is chosen." },
+  { id: "trim_heater_block", name: "Trim heater block", tag: "CNC 6061", made: "Xometry or PCBWay CNC, 6061-T6", file: "exports/trim_heater_block_{top,bottom}.step", note: "Split block clamping a 1/4\" 316 stainless tube (two passes, R16 U-bend) around a 24 V ~150 W cartridge heater. NTC pocket and 120 °C cutout mount on top." },
+];
+
+const stage = document.getElementById("stage");
+const statusEl = document.getElementById("status");
+let renderer, scene, camera, controls, current, assemblyGroups = {}, GROUP_META = {};
+const isAsm = id => id.startsWith("assembly");
+const cache = {};
+
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+function init3d() {
+  if (!window.THREE || !THREE.GLTFLoader || !THREE.OrbitControls) {
+    statusEl.textContent = "The 3D viewer could not load. Check your connection and reopen the page.";
+    return false;
+  }
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  stage.prepend(renderer.domElement);
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(35, 4 / 3, 0.001, 50);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f8c, 0.85));
+  const key = new THREE.DirectionalLight(0xffffff, 0.75); key.position.set(1, 2, 1.5); scene.add(key);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.3); fill.position.set(-1.5, 0.5, -1); scene.add(fill);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+  new ResizeObserver(resize).observe(stage);
+  resize();
+  (function loop() { requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); })();
+  return true;
+}
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+
+function parseColour(name) {
+  const g = GROUP_META[name];
+  if (!g) return null;
+  const v = g.rgba;
+  return { rgb: new THREE.Color(v[0], v[1], v[2]).convertSRGBToLinear(), hex: new THREE.Color(v[0], v[1], v[2]).getHexString(), a: v[3] };
+}
+function nodeId(o, groups) { while (o && !groups[o.name]) o = o.parent; return o ? o.name : ""; }
+
+function prepare(root, isAssembly, groups) {
+  assemblyGroups = {};
+  // OpenSCAD/STL is Z-up, three.js is Y-up; models are in mm, scale to metres.
+  root.rotation.x = -Math.PI / 2;
+  root.scale.setScalar(0.001);
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    if (!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
+    const id = isAssembly ? nodeId(o, groups) : "";
+    const c = parseColour(id);
+    o.material = new THREE.MeshStandardMaterial({
+      color: c ? c.rgb : new THREE.Color(0.32, 0.32, 0.35).convertSRGBToLinear(),
+      vertexColors: !c && !!o.geometry.attributes.color,
+      roughness: 0.6, metalness: 0.05,
+      transparent: c ? c.a < 1 : false, opacity: c ? c.a : 1,
+      flatShading: true, side: THREE.DoubleSide,
+    });
+    if (isAssembly) {
+      const label = groups[id] ? groups[id].label : "Other";
+      (assemblyGroups[label] = assemblyGroups[label] || { meshes: [], colour: c }).meshes.push(o);
+    }
+  });
+}
+
+function frame(obj) {
+  const box = new THREE.Box3().setFromObject(obj);
+  const size = box.getSize(new THREE.Vector3()), centre = box.getCenter(new THREE.Vector3());
+  const r = size.length() / 2;
+  const dist = r / Math.sin((camera.fov * Math.PI / 180) / 2) * 0.9;
+  const dir = new THREE.Vector3(0.55, 0.42, 1).normalize();
+  camera.position.copy(centre).addScaledVector(dir, dist);
+  camera.near = dist / 100; camera.far = dist * 10; camera.updateProjectionMatrix();
+  controls.target.copy(centre); controls.update();
+}
+
+function load(part) {
+  const file = isAsm(part.id) ? `${part.id}.glb` : `part_${part.id}.glb`;
+  if (cache[file]) return Promise.resolve(cache[file]);
+  const ready = isAsm(part.id)
+    ? fetch(`${part.id}_groups.json`).then(r => r.json()).then(j => { GROUP_META = j; }).catch(() => { GROUP_META = {}; })
+    : Promise.resolve();
+  return ready
+    .then(() => fetch(file + ".b64.txt"))
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(b64 => {
+      const bin = atob(b64.trim()), buf = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+      return new Promise((res, rej) => new THREE.GLTFLoader().parse(buf.buffer, "", g => {
+        prepare(g.scene, isAsm(part.id), GROUP_META); g.scene.userData.groups = assemblyGroups; cache[file] = g.scene; res(g.scene);
+      }, rej));
+    });
+}
+
+async function show(part) {
+  document.querySelectorAll(".pick").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === part.id));
+  document.getElementById("layers-card").hidden = !isAsm(part.id);
+  const info = document.getElementById("info-card");
+  info.hidden = isAsm(part.id);
+  if (!isAsm(part.id)) {
+    document.getElementById("info-name").textContent = part.name;
+    document.getElementById("info").innerHTML =
+      `<dt>Made by</dt><dd>${part.made}</dd><dt>File</dt><dd class="mono" style="font-size:12px;overflow-wrap:anywhere">${part.file}</dd><dt>Notes</dt><dd>${part.note}</dd>`;
+  }
+  if (!renderer) return;
+  statusEl.hidden = false; statusEl.textContent = "Loading model…";
+  try {
+    const obj = await load(part);
+    if (current) scene.remove(current);
+    current = obj; scene.add(obj); frame(obj);
+    if (isAsm(part.id)) buildLayers(obj.userData.groups);
+    statusEl.hidden = true;
+  } catch (e) {
+    statusEl.textContent = "This model could not load. Reopen the page to try again.";
+  }
+}
+
+function buildLayers(groups) {
+  const box = document.getElementById("layers");
+  box.innerHTML = "";
+  Object.entries(groups).sort().forEach(([label, g], i) => {
+    const id = "layer-" + i;
+    const lab = document.createElement("label");
+    const col = g.colour ? "#" + g.colour.hex : "transparent";
+    lab.innerHTML = `<input type="checkbox" id="${id}" ${g.meshes[0].visible ? "checked" : ""}><span class="sw" style="background:${col}"></span>${label}`;
+    lab.querySelector("input").addEventListener("change", e => g.meshes.forEach(m => m.visible = e.target.checked));
+    box.appendChild(lab);
+  });
+}
+
+function buildPicks() {
+  const box = document.getElementById("picks");
+  PARTS.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "pick"; b.type = "button"; b.dataset.id = p.id;
+    b.innerHTML = `<span>${p.name}</span><small>${p.tag}</small>`;
+    b.addEventListener("click", () => show(p));
+    box.appendChild(b);
+  });
+}
+
+// ---------------- BOM ----------------
+const ORDER = ["Water and heat", "Sensing", "Control and motion", "Body, doors and lighting", "Other"];
+const usd = n => "$" + n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+async function buildBom() {
+  let rows;
+  try { rows = await (await fetch("bom.json")).json(); }
+  catch (e) { document.getElementById("bom").textContent = "The BOM could not load. Reopen the page to try again."; return; }
+  const total = rows.reduce((s, r) => s + Number(r.total), 0);
+  document.getElementById("fig-total").textContent = usd(total);
+  document.getElementById("bom-total").textContent = usd(total);
+  document.getElementById("fig-lines").textContent = rows.length;
+  const host = document.getElementById("bom");
+  ORDER.forEach(cat => {
+    const items = rows.filter(r => r.category === cat);
+    if (!items.length) return;
+    const sub = items.reduce((s, r) => s + Number(r.total), 0);
+    const g = document.createElement("div"); g.className = "group";
+    g.innerHTML = `<div class="ghead"><h3>${cat}</h3><span class="mono">${items.length} lines · ${usd(sub)}</span></div>
+      <div class="row cols"><span>Item</span><span class="qty">Qty</span><span>Source</span><span class="cost">Est. cost</span><span></span></div>` +
+      items.map(r => {
+        const verify = /VERIFY/.test(r.notes);
+        const notes = r.notes.replace(/^est;?\s*/, "").replace(/VERIFY:?\s*/, "");
+        return `<div class="row">
+          <div><div class="name">${esc(r.item)}</div><div class="spec">${esc(r.spec)}</div>
+            ${verify ? `<span class="flag">VERIFY</span>` : ""}${notes && notes !== "est" ? `<div class="notes">${esc(notes)}</div>` : ""}</div>
+          <div class="qty">${esc(r.qty)}<br><span style="color:var(--muted);font-size:11px">${esc(r.unit)}</span></div>
+          <div class="src">${esc(r.source)}</div>
+          <div class="cost">${usd(Number(r.total))}${Number(r.qty) > 1 ? `<small>${usd(Number(r.unit_cost))} each</small>` : ""}</div>
+          <div class="act">${r.url ? `<a class="link" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.link_kind)} ↗</a>` : ""}</div>
+        </div>`;
+      }).join("");
+    host.appendChild(g);
+  });
+}
+
+buildPicks();
+buildBom();
+if (init3d()) {
+  document.getElementById("reset").addEventListener("click", () => current && frame(current));
+  show(PARTS[0]);
+} else {
+  show(PARTS[0]);
+}
+</script>
